@@ -1,4 +1,5 @@
 const express = require("express");
+const postRoutes = require("./routes/postRoutes");
 
 const app = express();
 
@@ -15,5 +16,7 @@ app.get("/blog", (req, res) => {
     message: "Welcome to My BLOG!!!",
   });
 });
+
+app.use("/posts", postRoutes);
 
 module.exports = app;
