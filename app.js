@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const postRoutes = require("./routes/postRoutes");
 
 const app = express();
@@ -10,13 +11,15 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/blog", (req, res) => {
-  res.status(200).send({
-    status: "success",
-    message: "Welcome to My BLOG!!!",
-  });
-});
+// app.get("/blog", (req, res) => {
+//   res.status(200).send({
+//     status: "success",
+//     message: "Welcome to My BLOG!!!",
+//   });
+// });
 
-app.use("/posts", postRoutes);
+app.use(bodyParser.json());
+
+app.use("/api/v1/posts", postRoutes);
 
 module.exports = app;
