@@ -1,4 +1,5 @@
-const Post = require("../models/post");
+const Validator = require("fastest-validator");
+// const Post = require("../models/post");
 const models = require("../models");
 
 exports.getAllPosts = async (req, res) => {
@@ -45,8 +46,26 @@ exports.createPost = async (req, res) => {
     categoryId: req.body.categoryId,
     userId: 1,
   };
-  //   const post = await req.body;
 
+  const schema = {
+    title: { type: "string", optional: false, min: 3, max: 100 },
+    content: { type: "string", optional: false, min: 5, max: 500 },
+    imageUrl: { type: "string", optional: true, format: "url" },
+    categoryId: { type: "number", optional: false },
+    userId: { type: "number" },
+  };
+
+  const v = new Validator();
+  const isValid = v.validate(post, schema);
+  console.log(isValid);
+
+  if (isValid !== true) {
+    return res.status(400).json({
+      status: "error",
+      message: "Invalid data provided",
+      errors: isValid,
+    });
+  }
   models.Post.create(post)
     .then((result) => {
       res.status(201).send({
@@ -97,7 +116,7 @@ exports.deletePost = async (req, res) => {
   const id = req.params.id;
   const userId = 1;
 
-  const post = await models.Post.findByPk(id); 
+  const post = await models.Post.findByPk(id);
   if (!post) {
     return res.status(404).json({
       status: "error",
